@@ -1,23 +1,15 @@
-import Link from "next/link";
 import { requireUser } from "@/lib/auth";
 import { XP, MASTERY, getLevelProgress } from "@/lib/training/rules";
-import LeaderboardToggle from "@/components/leaderboard/LeaderboardToggle";
 import LeaderboardTable, { type LeaderboardRow } from "@/components/leaderboard/LeaderboardTable";
 
 export default async function LearnPage() {
   const { supabase, userId } = await requireUser();
 
   const [
-    { data: profile },
     { data: attempts },
     { count: totalTools },
     { data: leaderboardData, error: leaderboardError }
   ] = await Promise.all([
-    supabase
-      .from("profiles")
-      .select("display_name, leaderboard_opt_in")
-      .eq("id", userId)
-      .single(),
     supabase
       .from("attempts")
       .select("tool_id, mode, question_type, is_correct, attempted_at")
@@ -93,94 +85,46 @@ export default async function LearnPage() {
 
   return (
     <div className="grid">
-      <div>
-        <h1>⚡ Apprentice Tool Training</h1>
-        <div className="warning">
-          Prototype application: Training content and data may be incomplete or inaccurate.
-          Do not rely on this app as an authoritative source for work procedures,
-          safety guidance, or tool requirements.
+      <section className="card grid stats-section" aria-labelledby="stats-heading">
+        <h1 id="stats-heading">Your Training Stats</h1>
+        <div>
+          <h2>Level {level.level}</h2>
+          <strong>{xp.toLocaleString()} XP</strong>
+          <progress
+            className="progress stats-progress"
+            value={level.xpIntoLevel}
+            max={level.xpNeeded}
+            aria-label={`Progress toward Level ${level.level + 1}`}
+          />
+          <p className="muted">
+            {level.xpIntoLevel} / {level.xpNeeded} XP toward Level {level.level + 1}
+          </p>
         </div>
-        <p className="muted">
-          Signed in as {profile?.display_name ?? "Learner"}
-        </p>
-      </div>
 
-      <section className="card level-card">
-        <div className="level-card-top">
+        <dl className="grid grid-4 stats-metrics">
           <div>
-            <h2>Level {level.level}</h2>
-            <strong>{xp.toLocaleString()} XP</strong>
+            <dt className="muted">Tools Mastered</dt>
+            <dd className="metric">{mastered} / {totalTools ?? 0}</dd>
           </div>
-          <LeaderboardToggle initialValue={profile?.leaderboard_opt_in ?? true} />
-        </div>
-        <div className="progress" style={{ marginTop: ".6rem" }}>
-          <div style={{ width: `${level.progress * 100}%` }} />
-        </div>
-        <p className="muted">
-          {level.xpIntoLevel} / {level.xpNeeded} XP toward Level {level.level + 1}
-        </p>
+          <div>
+            <dt className="muted">Accuracy</dt>
+            <dd className="metric">{accuracy.toFixed(1)}%</dd>
+          </div>
+          <div>
+            <dt className="muted">Attempts</dt>
+            <dd className="metric">{rows.length}</dd>
+          </div>
+          <div>
+            <dt className="muted">Tools Practiced</dt>
+            <dd className="metric">{byTool.size}</dd>
+          </div>
+        </dl>
       </section>
 
-      <section className="grid grid-4">
-        <div className="card">
-          <div className="muted">Tools Mastered</div>
-          <div className="metric">{mastered} / {totalTools ?? 0}</div>
-        </div>
-        <div className="card">
-          <div className="muted">Accuracy</div>
-          <div className="metric">{accuracy.toFixed(1)}%</div>
-        </div>
-        <div className="card">
-          <div className="muted">Attempts</div>
-          <div className="metric">{rows.length}</div>
-        </div>
-        <div className="card">
-          <div className="muted">Tools Practiced</div>
-          <div className="metric">{byTool.size}</div>
-        </div>
-      </section>
-
-      <section>
-        <h2>Start Training</h2>
-        <div className="grid grid-2">
-          <div className="card">
-            <h3>📚 Flashcards</h3>
-            <p>Study tool photos, then reveal the name, use, location, and family.</p>
-            <Link className="button" href="/learn/flashcards">
-              Start Flashcards
-            </Link>
-          </div>
-
-          <div className="card">
-            <h3>🧠 Comprehensive Quiz</h3>
-            <p>Mixed questions covering names, locations, families, and scenarios.</p>
-            <Link className="button" href="/learn/quiz">
-              Start Comprehensive Quiz
-            </Link>
-          </div>
-
-          <div className="card">
-            <h3>🧰 Tool Family Quiz</h3>
-            <p>Identify the named tool from four photos in the same family.</p>
-            <Link className="button" href="/learn/family-quiz">
-              Start Tool Family Quiz
-            </Link>
-          </div>
-
-          <div className="card">
-            <h3>📋 Scenario Quiz</h3>
-            <p>Choose an appropriate tool for a practical training scenario.</p>
-            <Link className="button" href="/learn/scenario-quiz">
-              Start Scenario Quiz
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <section className="leaderboard-section">
+      <section className="leaderboard-section" aria-labelledby="leaderboard-heading">
         <div className="leaderboard-heading">
           <div>
-            <h2>🏆 Training Leaderboard</h2>
+            <h2 id="leaderboard-heading">🏆 Training Leaderboard</h2>
             <p className="muted">
               Only learners who choose to appear on the leaderboard are shown.
             </p>

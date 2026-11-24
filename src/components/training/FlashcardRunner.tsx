@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import RoundSetup from "./RoundSetup";
 
 type Flashcard = {
   question_id: string;
@@ -47,7 +48,8 @@ export default function FlashcardRunner() {
     setNumber(nextNumber);
   }
 
-  async function begin() {
+  async function begin(count: number) {
+    setTargetCount(count);
     setStarted(true);
     setComplete(false);
     setKnown(0);
@@ -84,21 +86,12 @@ export default function FlashcardRunner() {
 
   if (!started) {
     return (
-      <div className="card grid" style={{ maxWidth: 520 }}>
-        <label>
-          Number of Cards
-          <input
-            type="number"
-            min={1}
-            max={50}
-            value={targetCount}
-            onChange={(event) =>
-              setTargetCount(Math.max(1, Number(event.target.value) || 1))
-            }
-          />
-        </label>
-        <button className="button" onClick={begin}>Begin Flashcards</button>
-      </div>
+      <RoundSetup
+        label="Number of Cards"
+        buttonLabel="Begin Flashcards"
+        defaultCount={targetCount}
+        onBegin={begin}
+      />
     );
   }
 

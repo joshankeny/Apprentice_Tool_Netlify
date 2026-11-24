@@ -1,0 +1,11 @@
+# The Next.js app lives in a subdirectory of the repository.
+[build]
+  base = "apprentice-tool-training-react"
+  # Install from the lockfile first so the `next` binary is always available,
+  # even in build environments that don't install dependencies automatically.
+  command = "npm ci && npm run build"
+  publish = ".next"
+
+[build.environment]
+  # Next.js 16 requires Node.js >= 20.9
+  NODE_VERSION = "22"

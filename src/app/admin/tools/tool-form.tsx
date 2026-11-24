@@ -2,6 +2,7 @@
 
 import { startTransition, useActionState, useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
+import { ToolTradeFields } from "./tool-trade-fields";
 import { saveTool } from "./actions";
 import { MAX_TOOL_PHOTO_BYTES, TOOL_PHOTO_TYPES, TOOL_STATUSES, type Tool, type ToolFamily } from "./tool-fields";
 
@@ -63,6 +64,8 @@ export function ToolForm({
       </div>
       <label>Use description<textarea name="use_description" rows={4} defaultValue={tool?.use_description ?? ""} /></label>
       <label>Normally carried or stored<input name="location" defaultValue={tool?.location ?? ""} /></label>
+      <ToolTradeFields trades={tool} />
+      <small className="muted">Leave all three trades Unset for a General tool.</small>
       <div className="grid admin-photo-field">
         {visiblePhoto && <img src={visiblePhoto} alt={photo ? "Selected tool photo" : "Current tool photo"} />}
         <label>

@@ -447,3 +447,39 @@
   padding: 0;
   border: 0;
 }
+
+.admin-trade-cell {
+  min-width: 13rem;
+}
+
+.admin-trade-values {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .25rem .7rem;
+  margin: .2rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.admin-trade-values li {
+  white-space: nowrap;
+}
+
+.admin-trade-cell summary {
+  cursor: pointer;
+}
+
+.admin-trade-cell form {
+  margin-top: .6rem;
+}
+
+.admin-trade-fields {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .5rem;
+}
+
+.admin-trade-fields legend {
+  margin-bottom: .4rem;
+  padding: 0;
+  font-weight: 600;
+}

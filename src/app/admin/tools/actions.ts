@@ -16,6 +16,48 @@ const toolFields = z.object({
 });
 
 const toolVersion = z.iso.datetime({ offset: true });
+const tradeValue = z.enum(["unset", "true", "false"]).transform((value) =>
+  value === "unset" ? null : value === "true"
+);
+const tradeFields = z.object({ is_wire: tradeValue, is_line: tradeValue, is_meter: tradeValue });
+
+function readToolTrades(formData: FormData) {
+  return tradeFields.safeParse({
+    is_wire: formData.get("is_wire"),
+    is_line: formData.get("is_line"),
+    is_meter: formData.get("is_meter")
+  });
+}
+
+function nextToolVersion(previous: string) {
+  return new Date(Math.max(Date.now(), Date.parse(previous) + 1)).toISOString();
+}
+
+type TradeSaveResult = { error: boolean; message: string } | null;
+
+export async function saveToolTrades(toolId: string, _previous: TradeSaveResult, formData: FormData): Promise<TradeSaveResult> {
+  const { supabase } = await requireAdmin();
+  const version = toolVersion.safeParse(formData.get("updated_at"));
+  if (!z.uuid().safeParse(toolId).success || !version.success) {
+    return { error: true, message: "Refresh the catalog to edit this tool." };
+  }
+
+  const trades = readToolTrades(formData);
+  if (!trades.success) return { error: true, message: "Choose Unset, Yes, or No for each trade." };
+
+  const { data, error } = await supabase.from("tools")
+    .update({ ...trades.data, updated_at: nextToolVersion(version.data) })
+    .eq("id", toolId)
+    .eq("updated_at", version.data)
+    .select("id")
+    .maybeSingle();
+
+  if (error) return { error: true, message: "The app could not confirm the save. Refresh before trying again." };
+  if (!data) return { error: true, message: "This tool changed while you were editing it. Refresh before trying again." };
+
+  revalidatePath("/admin/tools");
+  return { error: false, message: "Trades saved." };
+}
 
 function photoFormat(bytes: Uint8Array) {
   const startsWith = (signature: number[], offset = 0) =>
@@ -54,6 +96,8 @@ export async function saveTool(
     status: formData.get("status")
   });
   if (!parsed.success) return { error: parsed.error.issues[0].message };
+  const trades = readToolTrades(formData);
+  if (!trades.success) return { error: "Choose Unset, Yes, or No for each trade." };
   if (!toolId && !parsed.data.family_id) return { error: "Select a tool family." };
 
   const photo = formData.get("image");
@@ -82,12 +126,13 @@ export async function saveTool(
 
   const values = {
     ...parsed.data,
+    ...trades.data,
     ...(photoPath ? { image_path: photoPath } : {})
   };
   const change = toolId
     ? supabase.from("tools").update({
         ...values,
-        updated_at: new Date(Math.max(Date.now(), Date.parse(String(version)) + 1)).toISOString()
+        updated_at: nextToolVersion(String(version))
       }).eq("id", toolId).eq("updated_at", version)
     : supabase.from("tools").insert(values);
 

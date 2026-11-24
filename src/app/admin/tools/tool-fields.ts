@@ -1,3 +1,5 @@
+import { TRADES } from "@/lib/trades";
+
 export const TOOL_STATUSES = {
   draft: "Draft",
   published: "Published",
@@ -6,7 +8,15 @@ export const TOOL_STATUSES = {
 
 export type ToolStatus = keyof typeof TOOL_STATUSES;
 
-export type Tool = {
+export const TOOL_TRADE_COLUMNS = [
+  { column: "is_wire", label: TRADES.wire },
+  { column: "is_line", label: TRADES.line },
+  { column: "is_meter", label: TRADES.meter }
+] as const;
+
+export type ToolTrades = Record<(typeof TOOL_TRADE_COLUMNS)[number]["column"], boolean | null>;
+
+export type Tool = ToolTrades & {
   id: string;
   formal_name: string;
   common_name: string | null;

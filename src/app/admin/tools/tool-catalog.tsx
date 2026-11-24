@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { TOOL_STATUSES, type ToolStatus } from "./tool-fields";
+import { CatalogTrades } from "./catalog-trades";
+import { TOOL_STATUSES, type ToolStatus, type ToolTrades } from "./tool-fields";
 
 type CatalogTool = {
   id: string;
@@ -11,6 +12,8 @@ type CatalogTool = {
   family: string;
   status: ToolStatus;
   imageUrl: string;
+  version: string;
+  trades: ToolTrades;
 };
 
 export function ToolCatalog({ tools }: { tools: CatalogTool[] }) {
@@ -47,6 +50,7 @@ export function ToolCatalog({ tools }: { tools: CatalogTool[] }) {
       <p className="muted admin-count" aria-live="polite">
         {visibleTools.length} of {tools.length} tools
       </p>
+      <p className="muted admin-count">A tool with all three trades set to Unset is General.</p>
       {visibleTools.length ? (
         <div className="admin-table-wrap">
           <table className="table admin-tool-table">
@@ -56,6 +60,7 @@ export function ToolCatalog({ tools }: { tools: CatalogTool[] }) {
                 <th scope="col">Tool</th>
                 <th scope="col">Family</th>
                 <th scope="col">Status</th>
+                <th scope="col">Trades</th>
                 <th scope="col">Actions</th>
               </tr>
             </thead>
@@ -73,6 +78,7 @@ export function ToolCatalog({ tools }: { tools: CatalogTool[] }) {
                   </th>
                   <td>{tool.family}</td>
                   <td>{TOOL_STATUSES[tool.status]}</td>
+                  <td><CatalogTrades toolId={tool.id} toolName={tool.formalName} version={tool.version} trades={tool.trades} /></td>
                   <td>
                     <Link
                       href={`/admin/tools/${tool.id}/edit`}

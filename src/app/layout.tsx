@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import Link from "next/link";
+import { getUserContext, getUserProfile } from "@/lib/auth";
+import { THEME_COOKIE } from "@/lib/theme";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -7,25 +10,34 @@ export const metadata: Metadata = {
   description: "Interactive apprentice tool training."
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children
 }: Readonly<{ children: React.ReactNode }>) {
+  const [cookieStore, user, profile] = await Promise.all([
+    cookies(),
+    getUserContext(),
+    getUserProfile()
+  ]);
+  const theme = cookieStore.get(THEME_COOKIE)?.value === "dark" ? "dark" : "light";
+
   return (
-    <html lang="en">
+    <html lang="en" data-theme={theme}>
       <body>
         <header className="topbar">
           <div className="container topbar-inner">
-            <Link href="/learn">
-              <strong>⚡ Apprentice Tool Training</strong>
+            <Link className="brand-mark" href={user ? "/learn" : "/login"} aria-label="Apprentice Tool Training">
+              <span aria-hidden="true">⚡</span>
             </Link>
-            <nav className="nav">
-              <Link href="/learn">Home</Link>
-              <Link href="/learn/flashcards">Flashcards</Link>
-              <Link href="/learn/quiz">Comprehensive</Link>
-              <Link href="/learn/family-quiz">Family Quiz</Link>
-              <Link href="/learn/scenario-quiz">Scenario Quiz</Link>
-              <Link href="/admin/tools">Admin</Link>
-            </nav>
+            {user && (
+              <nav className="nav" aria-label="Main navigation">
+                <Link href="/learn">Home</Link>
+                <Link href="/learn/start">Start Training</Link>
+                <Link href="/profile">Profile</Link>
+                {profile?.role === "admin" && profile.active && (
+                  <Link href="/admin/tools">Admin</Link>
+                )}
+              </nav>
+            )}
           </div>
         </header>
         <main className="container page">{children}</main>

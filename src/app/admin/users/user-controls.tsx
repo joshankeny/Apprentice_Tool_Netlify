@@ -13,11 +13,17 @@ export function UserControls({
 }) {
   const [state, dispatch, pending] = useActionState(manageUser.bind(null, user.id), null);
 
+  const canPromote = !isCurrentUser && user.role === "learner" && user.active;
+
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (pending) return;
     const submitter = (event.nativeEvent as SubmitEvent).submitter;
     const data = new FormData(event.currentTarget, submitter);
+    if (data.get("intent") === "promote") {
+      const account = user.email ? `${user.display_name} (${user.email})` : user.display_name;
+      if (!window.confirm(`Grant full Admin access to ${account}?`)) return;
+    }
     startTransition(() => dispatch(data));
   }
 
@@ -49,6 +55,11 @@ export function UserControls({
           >
             Send Password Reset
           </button>
+          {canPromote && (
+            <button className="button secondary" name="intent" value="promote" disabled={pending} formNoValidate>
+              Promote to Admin
+            </button>
+          )}
         </div>
         {state && <p className={state.kind === "error" ? "warning" : "muted"} role={state.kind === "error" ? "alert" : "status"}>{state.message}</p>}
       </form>

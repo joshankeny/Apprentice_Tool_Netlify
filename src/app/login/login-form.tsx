@@ -1,6 +1,8 @@
 "use client";
 
 import { type FormEvent, useState } from "react";
+import { TradeSelect } from "@/components/TradeSelect";
+import { isTrade } from "@/lib/trades";
 import { createClient } from "@/lib/supabase/client";
 
 export default function LoginForm({ confirmationMessage }: { confirmationMessage: string }) {
@@ -27,11 +29,14 @@ export default function LoginForm({ confirmationMessage }: { confirmationMessage
         if (!displayName) throw new Error("Enter your display name.");
         if (password !== form.get("confirmPassword")) throw new Error("Passwords must match.");
 
+        const trade = form.get("trade");
+        if (!isTrade(trade)) throw new Error("Select a trade or General.");
+
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
-            data: { display_name: displayName },
+            data: { display_name: displayName, trade },
             emailRedirectTo: new URL("/auth/confirm", window.location.origin).href
           }
         });
@@ -78,6 +83,7 @@ export default function LoginForm({ confirmationMessage }: { confirmationMessage
             <input name="displayName" autoComplete="name" required />
           </label>
         )}
+        {creating && <TradeSelect key="trade" />}
         <label key="email">
           Email
           <input name="email" type="email" autoComplete="email" required />

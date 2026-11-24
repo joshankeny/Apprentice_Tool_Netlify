@@ -101,6 +101,14 @@ Routine tool and photo updates are saved from the web app.
 4. If you use email resets, after deployment edit the **Reset Password** email template in Supabase **Authentication → Email Templates**. Use `{{ .RedirectTo }}?token_hash={{ .TokenHash }}` as the reset button link. This sends the user directly to the reset form, where the app checks the link when the user submits a new password.
 5. To test email resets, request a fresh email from **Admin → Users → Send Password Reset** for an approved test account. Test that the user can set a password and sign in with it.
 
+## Trade-based training
+
+Apply `supabase/migrations/20261124_000005_trade_training.sql` before deploying this feature. The migration adds learner preferences and nullable boolean trade fields on `public.tools`. Existing learners default to General with the filter off.
+
+Set `is_wire`, `is_line`, or `is_meter` to true for each applicable trade. Tools with all three fields null are General and included in every pool. False is an explicit non-match. Set multiple fields to true for shared tools.
+
+Learners select a trade at signup and can update it under **Profile → Training Preferences**. General or a disabled trade filter includes all tools. With the filter enabled, all four training modes use that trade's tools plus General tools, including for answer choices. Existing attempts and leaderboard statistics still cover all training history.
+
 ## Rules preserved from the Streamlit app
 
 ### Mastery

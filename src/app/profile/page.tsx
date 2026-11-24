@@ -1,6 +1,8 @@
 import { cookies } from "next/headers";
 import LeaderboardToggle from "@/components/leaderboard/LeaderboardToggle";
 import { getUserProfile, requireUser } from "@/lib/auth";
+import { isTrade } from "@/lib/trades";
+import { TradePreferences } from "./trade-preferences";
 import { THEME_COOKIE } from "@/lib/theme";
 import { ChangePasswordForm } from "./change-password-form";
 import { DarkModeToggle, LogoutButton } from "./profile-controls";
@@ -18,6 +20,7 @@ export default async function ProfilePage() {
         <LeaderboardToggle initialValue={profile?.leaderboard_opt_in ?? true} />
         <LogoutButton />
       </section>
+      <TradePreferences initialTrade={isTrade(profile?.trade) ? profile.trade : "general"} initialTradeOnly={profile?.trade_only === true} />
       <ChangePasswordForm />
     </div>
   );

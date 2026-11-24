@@ -1,9 +1,10 @@
-import { getUserContext } from "@/lib/auth";
+import { getUserContext, getUserProfile } from "@/lib/auth";
 import {
   classifyLearningStatus,
   selectionWeight
 } from "@/lib/training/rules";
 import { sampleWithoutReplacement, weightedPick } from "@/lib/training/random";
+import { isTrade } from "@/lib/trades";
 import { publicToolImageUrl } from "@/lib/storage";
 
 export type ToolRow = {
@@ -31,6 +32,7 @@ export async function authenticatedContext() {
 
 export async function loadPublishedTools(requireImages = false) {
   const { supabase } = await authenticatedContext();
+  const profile = await getUserProfile();
 
   let query = supabase
     .from("tools")
@@ -39,6 +41,11 @@ export async function loadPublishedTools(requireImages = false) {
     )
     .eq("status", "published")
     .order("formal_name");
+
+  const trade = profile?.trade;
+  if (profile?.trade_only && isTrade(trade) && trade !== "general") {
+    query = query.or(`is_${trade}.eq.true,and(is_wire.is.null,is_line.is.null,is_meter.is.null)`);
+  }
 
   if (requireImages) {
     query = query.not("image_path", "is", null);

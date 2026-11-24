@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { getUserContext, getUserProfile } from "@/lib/auth";
-import { THEME_COOKIE } from "@/lib/theme";
+import { THEME_COOKIE, resolveTheme } from "@/lib/theme";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -18,7 +18,7 @@ export default async function RootLayout({
     getUserContext(),
     getUserProfile()
   ]);
-  const theme = cookieStore.get(THEME_COOKIE)?.value === "dark" ? "dark" : "light";
+  const theme = resolveTheme(cookieStore.get(THEME_COOKIE)?.value);
 
   return (
     <html lang="en" data-theme={theme}>

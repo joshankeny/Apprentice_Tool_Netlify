@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { getUserContext } from "@/lib/auth";
 import {
   classifyLearningStatus,
   selectionWeight
@@ -24,15 +24,9 @@ export type ScenarioRow = {
 };
 
 export async function authenticatedContext() {
-  const supabase = await createClient();
-  const { data, error } = await supabase.auth.getClaims();
-  const userId = data?.claims?.sub as string | undefined;
-
-  if (error || !userId) {
-    throw new Error("UNAUTHORIZED");
-  }
-
-  return { supabase, userId };
+  const context = await getUserContext();
+  if (!context) throw new Error("UNAUTHORIZED");
+  return context;
 }
 
 export async function loadPublishedTools(requireImages = false) {

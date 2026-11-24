@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { getUserContext } from "@/lib/auth";
 import { classifyLearningStatus, selectionWeight } from "@/lib/training/rules";
 import { weightedPick, sampleWithoutReplacement } from "@/lib/training/random";
 import { publicToolImageUrl } from "@/lib/storage";
@@ -7,7 +7,9 @@ import { publicToolImageUrl } from "@/lib/storage";
 type ToolRow = { id:string; formal_name:string; family_id:string; image_path:string; tool_families:{name:string}|null };
 
 export async function GET(){
- const supabase=await createClient();const {data:claimsData}=await supabase.auth.getClaims();const userId=claimsData?.claims?.sub as string|undefined;if(!userId)return NextResponse.json({error:"Unauthorized"},{status:401});
+ const context = await getUserContext();
+ if (!context) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+ const { supabase, userId } = context;
  const {data:tools,error:toolError}=await supabase.from("tools").select("id,formal_name,family_id,image_path,tool_families(name)").eq("status","published").not("image_path","is",null);
  if(toolError)return NextResponse.json({error:toolError.message},{status:500});
  const typedTools=(tools??[]) as unknown as ToolRow[];const byFamily=new Map<string,ToolRow[]>();for(const tool of typedTools){if(!tool.family_id||!tool.image_path)continue;const family=byFamily.get(tool.family_id)??[];family.push(tool);byFamily.set(tool.family_id,family)}

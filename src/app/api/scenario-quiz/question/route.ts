@@ -85,6 +85,9 @@ export async function GET() {
       { status: 400 }
     );
   } catch (error) {
+    if (error instanceof Error && error.message === "UNAUTHORIZED") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Could not build scenario question." },
       { status: 500 }

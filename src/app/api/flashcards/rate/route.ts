@@ -59,6 +59,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ saved: true });
   } catch (error) {
+    if (error instanceof Error && error.message === "UNAUTHORIZED") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Could not save rating." },
       { status: 500 }

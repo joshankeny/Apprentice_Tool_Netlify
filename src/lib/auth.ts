@@ -2,7 +2,7 @@ import { cache } from "react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
-export const getUserContext = cache(async () => {
+const getSessionContext = cache(async () => {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getClaims();
   const userId = data?.claims?.sub;
@@ -11,7 +11,7 @@ export const getUserContext = cache(async () => {
 });
 
 export const getUserProfile = cache(async () => {
-  const context = await getUserContext();
+  const context = await getSessionContext();
   if (!context) return null;
 
   const { data } = await context.supabase
@@ -23,6 +23,13 @@ export const getUserProfile = cache(async () => {
   return data;
 });
 
+export const getUserContext = cache(async () => {
+  const session = await getSessionContext();
+  if (!session) return null;
+  const profile = await getUserProfile();
+  return profile?.active ? session : null;
+});
+
 export async function requireUser() {
   const context = await getUserContext();
   if (!context) redirect("/login");
@@ -32,6 +39,6 @@ export async function requireUser() {
 export async function requireAdmin() {
   const context = await requireUser();
   const profile = await getUserProfile();
-  if (profile?.role !== "admin" || !profile.active) redirect("/learn");
+  if (profile?.role !== "admin") redirect("/learn");
   return context;
 }

@@ -11,7 +11,7 @@ export default async function EditToolPage({ params }: { params: Promise<{ toolI
 
   const [{ data: tool, error: toolError }, { data: families, error: familiesError }] = await Promise.all([
     supabase.from("tools")
-      .select("id,formal_name,common_name,family_id,use_description,location,status,image_path,updated_at")
+      .select("id,formal_name,common_name,family_id,use_description,location,status,image_path,updated_at,is_wire,is_line,is_meter")
       .eq("id", toolId)
       .maybeSingle(),
     supabase.from("tool_families").select("id,name,active").order("name")

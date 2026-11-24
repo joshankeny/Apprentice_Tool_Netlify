@@ -95,7 +95,8 @@ Routine tool and photo updates are saved from the web app.
 
 1. Apply `supabase/migrations/20261124_000004_admin_management.sql` to the existing Supabase project before deploying the app changes.
 2. In Supabase **Authentication → URL Configuration**, add `https://apprentice-tool.vercel.app/auth/reset-password` to **Redirect URLs**. Also add the exact preview URL with that path if testing password reset on a Vercel preview.
-3. Keep the Supabase reset email template using its confirmation link (`{{ .ConfirmationURL }}`). Test reset delivery with your configured SMTP provider and an approved test account.
+3. After deployment, edit the **Reset Password** email template in Supabase **Authentication → Email Templates**. Use `{{ .RedirectTo }}?token_hash={{ .TokenHash }}` as the reset button link. This sends the user directly to the reset form, where the app checks the link when the user submits a new password.
+4. Request a fresh email from **Admin → Users → Send Password Reset** for an approved test account. Test that the user can set a password and sign in with it.
 
 ## Rules preserved from the Streamlit app
 

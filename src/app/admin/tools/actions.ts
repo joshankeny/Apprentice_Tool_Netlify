@@ -33,32 +33,6 @@ function nextToolVersion(previous: string) {
   return new Date(Math.max(Date.now(), Date.parse(previous) + 1)).toISOString();
 }
 
-type TradeSaveResult = { error: boolean; message: string } | null;
-
-export async function saveToolTrades(toolId: string, _previous: TradeSaveResult, formData: FormData): Promise<TradeSaveResult> {
-  const { supabase } = await requireAdmin();
-  const version = toolVersion.safeParse(formData.get("updated_at"));
-  if (!z.uuid().safeParse(toolId).success || !version.success) {
-    return { error: true, message: "Refresh the catalog to edit this tool." };
-  }
-
-  const trades = readToolTrades(formData);
-  if (!trades.success) return { error: true, message: "Choose Unset, Yes, or No for each trade." };
-
-  const { data, error } = await supabase.from("tools")
-    .update({ ...trades.data, updated_at: nextToolVersion(version.data) })
-    .eq("id", toolId)
-    .eq("updated_at", version.data)
-    .select("id")
-    .maybeSingle();
-
-  if (error) return { error: true, message: "The app could not confirm the save. Refresh before trying again." };
-  if (!data) return { error: true, message: "This tool changed while you were editing it. Refresh before trying again." };
-
-  revalidatePath("/admin/tools");
-  return { error: false, message: "Trades saved." };
-}
-
 function photoFormat(bytes: Uint8Array) {
   const startsWith = (signature: number[], offset = 0) =>
     signature.every((byte, index) => bytes[offset + index] === byte);

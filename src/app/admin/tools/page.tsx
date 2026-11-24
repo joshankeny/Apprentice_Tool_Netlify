@@ -11,7 +11,7 @@ export default async function AdminToolsPage({
   const { supabase } = await requireAdmin();
   const [{ data, error }, { saved }] = await Promise.all([
     supabase.from("tools")
-      .select("id,formal_name,common_name,status,image_path,updated_at,is_wire,is_line,is_meter,tool_families(name)")
+      .select("id,formal_name,common_name,status,image_path,is_wire,is_line,is_meter,tool_families(name)")
       .order("formal_name")
       .order("id"),
     searchParams
@@ -24,7 +24,6 @@ export default async function AdminToolsPage({
       commonName: tool.common_name,
       status: tool.status,
       family: family?.name ?? "Unassigned",
-      version: tool.updated_at,
       trades: { is_wire: tool.is_wire, is_line: tool.is_line, is_meter: tool.is_meter },
       imageUrl: publicToolImageUrl(process.env.NEXT_PUBLIC_SUPABASE_URL!, tool.image_path)
     };

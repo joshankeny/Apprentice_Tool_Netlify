@@ -12,7 +12,6 @@ type CatalogTool = {
   family: string;
   status: ToolStatus;
   imageUrl: string;
-  version: string;
   trades: ToolTrades;
 };
 
@@ -78,7 +77,7 @@ export function ToolCatalog({ tools }: { tools: CatalogTool[] }) {
                   </th>
                   <td>{tool.family}</td>
                   <td>{TOOL_STATUSES[tool.status]}</td>
-                  <td><CatalogTrades toolId={tool.id} toolName={tool.formalName} version={tool.version} trades={tool.trades} /></td>
+                  <td><CatalogTrades trades={tool.trades} /></td>
                   <td>
                     <Link
                       href={`/admin/tools/${tool.id}/edit`}

@@ -16,7 +16,7 @@ export const getUserProfile = cache(async () => {
 
   const { data } = await context.supabase
     .from("profiles")
-    .select("display_name, role, active, leaderboard_opt_in")
+    .select("display_name, role, active, leaderboard_opt_in, trade, trade_only")
     .eq("id", context.userId)
     .single();
 

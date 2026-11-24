@@ -1,3 +1,47 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/auth";
-export default async function AdminToolsPage(){const {supabase}=await requireAdmin();const {data:tools}=await supabase.from("tools").select("id,formal_name,common_name,status,image_path,tool_families(name)").order("formal_name");return <div className="grid"><div style={{display:"flex",justifyContent:"space-between",gap:"1rem"}}><div><h1>Tools</h1><p className="muted">Training content should be manageable here without code changes.</p></div><div><Link className="button" href="/admin/tools/new">Add Tool</Link></div></div><div className="card" style={{overflowX:"auto"}}><table className="table"><thead><tr><th>Tool</th><th>Common Name</th><th>Family</th><th>Image</th><th>Status</th></tr></thead><tbody>{(tools??[]).map((tool:any)=><tr key={tool.id}><td>{tool.formal_name}</td><td>{tool.common_name||"—"}</td><td>{tool.tool_families?.name||"Uncategorized"}</td><td>{tool.image_path?"✓":"—"}</td><td>{tool.status}</td></tr>)}</tbody></table></div></div>}
+import { publicToolImageUrl } from "@/lib/storage";
+import { ToolCatalog } from "./tool-catalog";
+
+export default async function AdminToolsPage({
+  searchParams
+}: {
+  searchParams: Promise<{ saved?: string }>;
+}) {
+  const { supabase } = await requireAdmin();
+  const [{ data, error }, { saved }] = await Promise.all([
+    supabase.from("tools")
+      .select("id,formal_name,common_name,status,image_path,tool_families(name)")
+      .order("formal_name")
+      .order("id"),
+    searchParams
+  ]);
+  const tools = (data ?? []).map((tool) => {
+    const family = Array.isArray(tool.tool_families) ? tool.tool_families[0] : tool.tool_families;
+    return {
+      id: tool.id,
+      formalName: tool.formal_name,
+      commonName: tool.common_name,
+      status: tool.status,
+      family: family?.name ?? "Unassigned",
+      imageUrl: publicToolImageUrl(process.env.NEXT_PUBLIC_SUPABASE_URL!, tool.image_path)
+    };
+  });
+
+  return (
+    <div className="grid">
+      <div className="admin-heading">
+        <div>
+          <h1>Tool Catalog</h1>
+          <p className="muted">Add tools, update details, and manage training photos.</p>
+        </div>
+        <Link href="/admin/tools/new" className="button">Add Tool</Link>
+      </div>
+      {saved === "edited" && <p className="admin-save-status" role="status">Tool changes saved.</p>}
+      {saved === "added" && <p className="admin-save-status" role="status">Tool added.</p>}
+      {error
+        ? <p className="warning" role="alert">The tool catalog could not be loaded. Refresh to try again.</p>
+        : <ToolCatalog tools={tools} />}
+    </div>
+  );
+}

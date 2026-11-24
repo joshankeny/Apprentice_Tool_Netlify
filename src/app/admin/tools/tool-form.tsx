@@ -62,17 +62,7 @@ export function ToolForm({
         </label>
       </div>
       <label>Use description<textarea name="use_description" rows={4} defaultValue={tool?.use_description ?? ""} /></label>
-      <div className="grid grid-2">
-        <label>Normally carried or stored<input name="location" defaultValue={tool?.location ?? ""} /></label>
-        <label>
-          Difficulty (1–10)
-          <input name="difficulty" type="number" min={1} max={10} step={1} defaultValue={tool?.difficulty ?? ""} />
-        </label>
-      </div>
-      <label className="toggle-row">
-        <input type="checkbox" name="is_commonly_missed" defaultChecked={tool?.is_commonly_missed ?? false} />
-        <span>Commonly missed</span>
-      </label>
+      <label>Normally carried or stored<input name="location" defaultValue={tool?.location ?? ""} /></label>
       <div className="grid admin-photo-field">
         {visiblePhoto && <img src={visiblePhoto} alt={photo ? "Selected tool photo" : "Current tool photo"} />}
         <label>

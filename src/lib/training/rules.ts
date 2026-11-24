@@ -17,8 +17,6 @@ export const ADAPTIVE_WEIGHTS: Record<LearningStatus, number> = {
   Mastered: 1
 };
 
-export const COMMONLY_MISSED_MULTIPLIER = 1.25;
-
 export function classifyLearningStatus(input: { attempts: number; accuracy: number; mostRecentCorrect: boolean; }): LearningStatus {
   const { attempts, accuracy, mostRecentCorrect } = input;
   const mastered = attempts >= MASTERY.MIN_ATTEMPTS && accuracy >= MASTERY.MIN_ACCURACY && mostRecentCorrect;
@@ -29,9 +27,8 @@ export function classifyLearningStatus(input: { attempts: number; accuracy: numb
   return "Learning";
 }
 
-export function selectionWeight(status: LearningStatus, commonlyMissed: boolean) {
-  const base = ADAPTIVE_WEIGHTS[status];
-  return commonlyMissed ? base * COMMONLY_MISSED_MULTIPLIER : base;
+export function selectionWeight(status: LearningStatus) {
+  return ADAPTIVE_WEIGHTS[status];
 }
 
 export function getLevelProgress(xp: number) {

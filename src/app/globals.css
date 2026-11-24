@@ -1,41 +1,29 @@
 :root {
-  color-scheme: light;
-  --background: #f7f8fa;
-  --foreground: #16181d;
-  --card: #fff;
-  --border: #dfe3e8;
-  --muted: #667085;
+  color-scheme: light dark;
+  --background: light-dark(#f7f8fa, #11151d);
+  --foreground: light-dark(#16181d, #e8edf5);
+  --card: light-dark(#fff, #1c2330);
+  --border: light-dark(#dfe3e8, #394456);
+  --muted: light-dark(#667085, #aebcd0);
   --primary: #2563eb;
-  --link: #2563eb;
-  --success: #16a34a;
+  --link: light-dark(#2563eb, #9cbdff);
+  --success: light-dark(#16a34a, #32834c);
   --danger: #dc2626;
-  --warning-border: #f5c451;
-  --warning-bg: #fff8db;
-  --progress-track: #e7e9ee;
-  --photo-background: #fff;
-  --selected-bg: #eff6ff;
-  --success-bg: #f0fdf4;
-  --danger-bg: #fef2f2;
+  --warning-border: light-dark(#f5c451, #9f792d);
+  --warning-bg: light-dark(#fff8db, #392d18);
+  --progress-track: light-dark(#e7e9ee, #334054);
+  --photo-background: light-dark(#fff, #eef1f5);
+  --selected-bg: light-dark(#eff6ff, #253a5f);
+  --success-bg: light-dark(#f0fdf4, #183c2a);
+  --danger-bg: light-dark(#fef2f2, #49232b);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --background: #11151d;
-  --foreground: #e8edf5;
-  --card: #1c2330;
-  --border: #394456;
-  --muted: #aebcd0;
-  --primary: #2563eb;
-  --link: #9cbdff;
-  --success: #32834c;
-  --danger: #dc2626;
-  --warning-border: #9f792d;
-  --warning-bg: #392d18;
-  --progress-track: #334054;
-  --photo-background: #eef1f5;
-  --selected-bg: #253a5f;
-  --success-bg: #183c2a;
-  --danger-bg: #49232b;
 }
 
 *{box-sizing:border-box}html,body{margin:0;padding:0;background:var(--background);color:var(--foreground);font-family:Arial,Helvetica,sans-serif}a{color:inherit;text-decoration:none}button,input,select,textarea{font:inherit}.container{width:min(1100px,calc(100% - 2rem));margin:0 auto}.topbar{background:var(--card);border-bottom:1px solid var(--border)}.topbar-inner{min-height:64px;display:flex;align-items:center;justify-content:space-between;gap:1rem}.nav{display:flex;gap:.75rem;flex-wrap:wrap}.page{padding:2rem 0 4rem}.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1rem}.grid{display:grid;gap:1rem}.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}.metric{font-size:1.7rem;font-weight:700}.muted{color:var(--muted)}.button{border:0;border-radius:9px;min-height:42px;padding:.65rem 1rem;background:var(--primary);color:#fff;font-weight:600;cursor:pointer;display:inline-grid;place-items:center}.button.secondary{background:var(--card);color:var(--foreground);border:1px solid var(--border)}.button:disabled{opacity:.6;cursor:default}.warning{border:1px solid var(--warning-border);background:var(--warning-bg);padding:.8rem 1rem;border-radius:10px}.progress{height:10px;background:var(--progress-track);overflow:hidden;border-radius:999px}.progress>div{height:100%;background:var(--primary)}.photo-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.8rem}.photo-choice{position:relative;height:230px;padding:0;border:2px solid var(--border);border-radius:12px;overflow:hidden;background:var(--photo-background);cursor:pointer}.photo-choice img{width:100%;height:100%;object-fit:contain}.photo-choice.selected{border:4px solid var(--primary)}.photo-choice.correct{border:5px solid var(--success)}.photo-choice.wrong{border:5px solid var(--danger)}.badge{position:absolute;top:10px;right:10px;width:42px;height:42px;display:grid;place-items:center;border-radius:999px;color:#fff;font-size:1.6rem;font-weight:800}.badge.correct{background:var(--success)}.badge.wrong{background:var(--danger)}.table{width:100%;border-collapse:collapse;background:var(--card)}.table th,.table td{padding:.7rem;text-align:left;border-bottom:1px solid var(--border)}input,select,textarea{width:100%;padding:.7rem;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--foreground)}label{display:grid;gap:.35rem;font-weight:600}@media(max-width:800px){.grid-4,.photo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-2{grid-template-columns:1fr}}

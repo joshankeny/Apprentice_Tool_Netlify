@@ -75,7 +75,7 @@ Open `/learn/family-quiz` to test the first training mode.
 
 ## Tool catalog handoff
 
-Sign in with an active admin account and select **Admin** in the top navigation.
+Sign in with an active admin account and open **Admin → Manage Tools**.
 
 - Use search and the status filter to find a tool. The catalog shows its current photo, family, and publish status.
 - Select **Edit** to update the tool or choose a new photo. Select **Add Tool** to create a record in an existing active family.
@@ -83,6 +83,19 @@ Sign in with an active admin account and select **Admin** in the top navigation.
 - Use **Draft** while preparing a tool, **Published** when it is ready for training, and **Archived** to remove it from future training rounds while preserving its attempt history.
 
 Routine tool and photo updates are saved from the web app.
+
+## Admin handoff
+
+- **Tools** opens the existing catalog and photo editor.
+- **Scenarios** lets admins add or edit a use case, select all correct tools, and choose Draft, Published, or Archived. Publishing requires at least one published tool. Quiz generation also needs enough other tools to build answer choices.
+- **Users** lets admins change display names and account status. Deactivation preserves history and blocks app and training access. An admin cannot deactivate their own account.
+- **Send Password Reset** asks Supabase Auth to email the user a link to the app. The user chooses their own password.
+
+### One-time deployment setup
+
+1. Apply `supabase/migrations/20261124_000004_admin_management.sql` to the existing Supabase project before deploying the app changes.
+2. In Supabase **Authentication → URL Configuration**, add `https://apprentice-tool.vercel.app/auth/reset-password` to **Redirect URLs**. Also add the exact preview URL with that path if testing password reset on a Vercel preview.
+3. Keep the Supabase reset email template using its confirmation link (`{{ .ConfirmationURL }}`). Test reset delivery with your configured SMTP provider and an approved test account.
 
 ## Rules preserved from the Streamlit app
 

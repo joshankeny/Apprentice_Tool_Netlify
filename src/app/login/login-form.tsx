@@ -44,8 +44,13 @@ export default function LoginForm({ confirmationMessage }: { confirmationMessage
           return;
         }
       } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
+        const { data: profile } = await supabase.from("profiles").select("active").eq("id", data.user.id).single();
+        if (!profile?.active) {
+          await supabase.auth.signOut({ scope: "local" });
+          throw new Error("This account is unavailable. Contact your training administrator.");
+        }
       }
 
       window.location.replace("/learn");

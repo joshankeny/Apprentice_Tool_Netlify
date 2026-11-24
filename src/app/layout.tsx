@@ -34,7 +34,7 @@ export default async function RootLayout({
                 <Link href="/learn/start">Start Training</Link>
                 <Link href="/profile">Profile</Link>
                 {profile?.role === "admin" && profile.active && (
-                  <Link href="/admin/tools">Admin</Link>
+                  <Link href="/admin">Admin</Link>
                 )}
               </nav>
             )}

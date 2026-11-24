@@ -32,6 +32,7 @@ export default async function AdminToolsPage({
     <div className="grid">
       <div className="admin-heading">
         <div>
+          <Link href="/admin" className="admin-back">Back to Admin</Link>
           <h1>Tool Catalog</h1>
           <p className="muted">Add tools, update details, and manage training photos.</p>
         </div>

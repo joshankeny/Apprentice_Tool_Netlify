@@ -70,6 +70,9 @@ export async function POST(request: NextRequest) {
       correct_answer: correctAnswer
     });
   } catch (error) {
+    if (error instanceof Error && error.message === "UNAUTHORIZED") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Could not submit answer." },
       { status: 500 }

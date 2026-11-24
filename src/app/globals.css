@@ -414,3 +414,29 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+.admin-back {
+  justify-self: start;
+  color: var(--link);
+}
+
+.admin-back:hover {
+  text-decoration: underline;
+}
+
+.admin-status {
+  text-transform: capitalize;
+}
+
+.admin-tool-options {
+  min-width: 0;
+  max-height: 18rem;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: .75rem;
+}
+
+.admin-user-form {
+  min-width: 15rem;
+}

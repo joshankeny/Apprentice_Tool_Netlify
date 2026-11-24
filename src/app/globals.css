@@ -463,3 +463,23 @@
   padding: 0;
   font-weight: 600;
 }
+
+.progress-report-filters {
+  grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr));
+}
+
+.progress-report-table :is(th, td) {
+  white-space: nowrap;
+}
+
+.progress-report-table th[scope="row"] {
+  min-width: 10rem;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 650px) {
+  .progress-report-filters {
+    grid-template-columns: 1fr;
+  }
+}

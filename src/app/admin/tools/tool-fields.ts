@@ -13,8 +13,6 @@ export type Tool = {
   family_id: string | null;
   use_description: string | null;
   location: string | null;
-  difficulty: number | null;
-  is_commonly_missed: boolean;
   status: ToolStatus;
   image_path: string | null;
   updated_at: string;

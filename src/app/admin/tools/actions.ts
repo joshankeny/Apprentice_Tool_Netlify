@@ -12,10 +12,7 @@ const toolFields = z.object({
   family_id: z.union([z.uuid(), z.literal("")]).transform((value) => value || null),
   use_description: z.string().trim().transform((value) => value || null),
   location: z.string().trim().transform((value) => value || null),
-  difficulty: z.string().trim().regex(/^(?:[1-9]|10)?$/, "Difficulty must be a whole number from 1 to 10.")
-    .transform((value) => value ? Number(value) : null),
-  status: z.enum(Object.keys(TOOL_STATUSES)),
-  is_commonly_missed: z.boolean()
+  status: z.enum(Object.keys(TOOL_STATUSES))
 });
 
 const toolVersion = z.iso.datetime({ offset: true });
@@ -54,9 +51,7 @@ export async function saveTool(
     family_id: formData.get("family_id"),
     use_description: formData.get("use_description"),
     location: formData.get("location"),
-    difficulty: formData.get("difficulty"),
-    status: formData.get("status"),
-    is_commonly_missed: formData.get("is_commonly_missed") === "on"
+    status: formData.get("status")
   });
   if (!parsed.success) return { error: parsed.error.issues[0].message };
   if (!toolId && !parsed.data.family_id) return { error: "Select a tool family." };

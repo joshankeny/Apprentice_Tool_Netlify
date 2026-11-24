@@ -13,9 +13,7 @@ export type ToolRow = {
   use_description: string | null;
   family_id: string | null;
   location: string | null;
-  difficulty: number | null;
   image_path: string | null;
-  is_commonly_missed: boolean;
   tool_families: { name: string } | null;
 };
 
@@ -23,7 +21,6 @@ export type ScenarioRow = {
   id: string;
   name: string;
   description: string;
-  difficulty: number | null;
 };
 
 export async function authenticatedContext() {
@@ -44,7 +41,7 @@ export async function loadPublishedTools(requireImages = false) {
   let query = supabase
     .from("tools")
     .select(
-      "id, formal_name, common_name, use_description, family_id, location, difficulty, image_path, is_commonly_missed, tool_families(name)"
+      "id, formal_name, common_name, use_description, family_id, location, image_path, tool_families(name)"
     )
     .eq("status", "published")
     .order("formal_name");
@@ -115,7 +112,7 @@ export async function chooseAdaptiveTool(tools: ToolRow[], userId: string) {
     return {
       tool,
       status,
-      weight: selectionWeight(status, tool.is_commonly_missed)
+      weight: selectionWeight(status)
     };
   });
 
@@ -248,7 +245,7 @@ export async function loadPublishedScenarios() {
   const { supabase } = await authenticatedContext();
   const { data, error } = await supabase
     .from("scenarios")
-    .select("id, name, description, difficulty")
+    .select("id, name, description")
     .eq("status", "published");
 
   if (error) throw error;

@@ -101,7 +101,7 @@ Routine tool and photo updates are saved from the web app.
 | Learning | 2 |
 | Mastered | 1 |
 
-Commonly missed multiplier: `1.25`.
+The app assigns each tool a learning status for the signed-in learner using their attempt count, accuracy, and most recent result.
 
 ### XP
 

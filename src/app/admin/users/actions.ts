@@ -13,7 +13,25 @@ export async function manageUser(id: string, _previous: Result, form: FormData):
   const { supabase, userId } = await requireAdmin();
   if (!z.uuid().safeParse(id).success) return { kind: "error", message: "Select a valid user." };
 
-  if (form.get("intent") === "reset") {
+  const intent = form.get("intent");
+  if (intent === "promote") {
+    if (id === userId) return { kind: "error", message: "Your account is already an admin." };
+
+    const { data, error } = await supabase.from("profiles")
+      .update({ role: "admin", updated_at: new Date().toISOString() })
+      .eq("id", id)
+      .eq("role", "learner")
+      .eq("active", true)
+      .select("id")
+      .maybeSingle();
+
+    if (error) return { kind: "error", message: "The account could not be promoted. Refresh and try again." };
+    if (!data) return { kind: "error", message: "Only active learners can be promoted. Refresh to see the current role." };
+    revalidatePath("/admin/users");
+    return { kind: "success", message: "Admin access granted. The user can refresh the app to see Admin." };
+  }
+
+  if (intent === "reset") {
     const { data: email, error } = await supabase.rpc("admin_training_reset_email", { p_user_id: id });
     if (error || !email) return { kind: "error", message: "This user needs an active account and an email address." };
 
@@ -40,7 +58,7 @@ export async function manageUser(id: string, _previous: Result, form: FormData):
     display_name: form.get("display_name"),
     active: id === userId ? "true" : form.get("active")
   });
-  if (form.get("intent") !== "save" || !fields.success) {
+  if (intent !== "save" || !fields.success) {
     return { kind: "error", message: "Enter a display name and select an account status." };
   }
 

@@ -89,6 +89,7 @@ Routine tool and photo updates are saved from the web app.
 - **Tools** opens the existing catalog and photo editor.
 - **Scenarios** lets admins add or edit a use case, select all correct tools, and choose Draft, Published, or Archived. Publishing requires at least one published tool. Quiz generation also needs enough other tools to build answer choices.
 - **Users** lets admins change display names and account status. Deactivation preserves history and blocks app and training access. An admin cannot deactivate their own account.
+- **Promote to Admin** grants full admin access to an active learner. Confirm the account before promoting it. The learner can refresh the app to see the Admin menu.
 - **Set Temporary Password** replaces the password for an active learner and shows the generated password once. Share it directly with the learner through an approved private channel. After signing in, they can replace it under **Profile → Change Password**. The temporary password remains valid until it is changed.
 - **Send Password Reset** remains available for projects with working recovery email delivery.
 

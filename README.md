@@ -73,6 +73,17 @@ Run `supabase/seed.sql` or create tool families manually. Then go to `/admin/too
 
 Open `/learn/family-quiz` to test the first training mode.
 
+## Tool catalog handoff
+
+Sign in with an active admin account and select **Admin** in the top navigation.
+
+- Use search and the status filter to find a tool. The catalog shows its current photo, family, and publish status.
+- Select **Edit** to update the tool or choose a new photo. Select **Add Tool** to create a record in an existing active family.
+- Photos can be JPEG, PNG, WebP, or GIF, up to 4 MB. The form previews the selected photo before saving.
+- Use **Draft** while preparing a tool, **Published** when it is ready for training, and **Archived** to remove it from future training rounds while preserving its attempt history.
+
+Routine tool and photo updates are saved from the web app.
+
 ## Rules preserved from the Streamlit app
 
 ### Mastery

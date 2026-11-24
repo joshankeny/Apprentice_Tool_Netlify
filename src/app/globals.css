@@ -330,3 +330,87 @@
     gap: .65rem;
   }
 }
+
+.admin-heading,
+.admin-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .75rem;
+}
+
+.admin-heading :is(h1, p),
+.admin-tool-page :is(h1, p),
+.admin-count {
+  margin: 0;
+}
+
+.admin-heading p,
+.admin-tool-page h1 + p {
+  margin-top: .35rem;
+}
+
+.admin-filters {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+}
+
+.admin-table-wrap {
+  overflow-x: auto;
+}
+
+.admin-tool-table {
+  min-width: 32rem;
+}
+
+.admin-tool-thumb,
+.admin-photo-field img {
+  display: block;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--photo-background);
+  object-fit: contain;
+}
+
+.admin-tool-thumb {
+  width: 3.5rem;
+  height: 3.5rem;
+}
+
+.admin-common-name {
+  display: block;
+  font-weight: 400;
+}
+
+.admin-tool-page {
+  max-width: 760px;
+}
+
+.admin-actions {
+  justify-content: flex-start;
+}
+
+.admin-photo-field {
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+  gap: .5rem;
+}
+
+.admin-photo-field img {
+  width: min(100%, 16rem);
+  height: 10rem;
+}
+
+.admin-save-status {
+  margin: 0;
+  padding: .75rem 1rem;
+  background: var(--success-bg);
+  border: 1px solid var(--success);
+  border-radius: 9px;
+}
+
+@media (max-width: 540px) {
+  .admin-filters {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

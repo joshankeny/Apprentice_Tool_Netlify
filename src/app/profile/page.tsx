@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import LeaderboardToggle from "@/components/leaderboard/LeaderboardToggle";
 import { getUserProfile, requireUser } from "@/lib/auth";
 import { THEME_COOKIE } from "@/lib/theme";
+import { ChangePasswordForm } from "./change-password-form";
 import { DarkModeToggle, LogoutButton } from "./profile-controls";
 
 export default async function ProfilePage() {
@@ -17,6 +18,7 @@ export default async function ProfilePage() {
         <LeaderboardToggle initialValue={profile?.leaderboard_opt_in ?? true} />
         <LogoutButton />
       </section>
+      <ChangePasswordForm />
     </div>
   );
 }

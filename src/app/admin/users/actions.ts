@@ -1,5 +1,6 @@
 "use server";
 
+import { randomBytes } from "node:crypto";
 import { createClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
@@ -51,4 +52,40 @@ export async function manageUser(id: string, _previous: Result, form: FormData):
   if (error || !data) return { kind: "error", message: "User changes could not be saved. Refresh and try again." };
   revalidatePath("/admin/users");
   return { kind: "success", message: "User changes saved." };
+}
+
+type TemporaryPasswordResult = { password: string } | { error: string };
+
+export async function setTemporaryPassword(id: string): Promise<TemporaryPasswordResult> {
+  const { supabase, userId } = await requireAdmin();
+  if (!z.uuid().safeParse(id).success || id === userId) {
+    return { error: "Select an active learner account." };
+  }
+
+  const { data: target, error: profileError } = await supabase.from("profiles")
+    .select("id")
+    .eq("id", id)
+    .eq("role", "learner")
+    .eq("active", true)
+    .maybeSingle();
+
+  if (profileError) return { error: "Could not confirm the learner account. Refresh and try again." };
+  if (!target) return { error: "Temporary passwords are available for active learners only." };
+
+  const secretKey = process.env.SUPABASE_SECRET_KEY?.trim();
+  if (!secretKey?.startsWith("sb_secret_")) {
+    return { error: "Set the server-side SUPABASE_SECRET_KEY to enable temporary passwords." };
+  }
+
+  const authAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, secretKey, {
+    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+  });
+
+  const password = `Aa9!${randomBytes(18).toString("base64url")}`;
+  const { data, error } = await authAdmin.auth.admin.updateUserById(target.id, { password });
+  if (error || !data.user) {
+    return { error: "Supabase could not confirm the password reset. Try again before sharing a password." };
+  }
+
+  return { password };
 }
